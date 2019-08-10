@@ -47,6 +47,7 @@ def main():
     parser.add_argument('--GAN2', action='store_true', help='Use GAN-based hallucinator if present')
     parser.add_argument('--VAEGAN', action='store_true', help='Use VAEGAN-based hallucinator if present')
     parser.add_argument('--VAEGAN2', action='store_true', help='Use VAEGAN2-based hallucinator if present')
+    parser.add_argument('--use_coarse', action='store_true', help='Use HAL_coarse (hallucinator with a transformation extractor) if present')
     parser.add_argument('--debug', action='store_true', help='Debug mode if present')
     args = parser.parse_args()
     train(args)
@@ -110,6 +111,16 @@ def train(args):
                       fc_dim=args.fc_dim,
                       z_dim=args.z_dim,
                       lambda_kl=args.lambda_kl,
+                      l2scale=args.l2scale)
+        elif args.use_coarse:
+            net = HAL_PN_COARSE(sess,
+                      model_name=args.hallucinator_name,
+                      result_path=args.result_path,
+                      m_support=args.m_support,
+                      n_support=args.n_support,
+                      n_aug=args.n_aug,
+                      n_query=args.n_query,
+                      fc_dim=args.fc_dim,
                       l2scale=args.l2scale)
         else:
             # HAL_PN: combine the analogy-based hallucinator (Hariharan, ICCV 2017) with the meta-learning-based hallucinator (Y.-X. Wang, CVPR 2018)
